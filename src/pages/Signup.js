@@ -2,12 +2,17 @@ import React, { useEffect, useState } from "react";
 import loginImage from "../assets/login.svg";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux"
+import { createUser, googleLogin } from "../features/auth/authSlice";
+import { toast } from "react-hot-toast";
 const Signup = () => {
   const { handleSubmit, register, reset, control } = useForm();
   const password = useWatch({ control, name: "password" });
   const confirmPassword = useWatch({ control, name: "confirmPassword" });
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState(true);
+  const dispatch = useDispatch();
+  const {user:{email} , isError, error} = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (
@@ -25,7 +30,16 @@ const Signup = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    dispatch(createUser(data))
   };
+  const handleGoogleLogin = () =>{
+    dispatch(googleLogin());
+      }
+      useEffect(()=>{
+        if(isError){
+          toast.error(error)
+        }
+      },[isError,error])
 
   return (
     <div className='flex h-screen items-center pt-14'>
@@ -89,6 +103,15 @@ const Signup = () => {
                     Login
                   </span>
                 </p>
+              </div>
+              <div className='relative !mt-8'>
+                <button
+                onClick={()=>handleGoogleLogin()}
+                  type='button'
+                  className='font-bold text-white py-3 rounded-full bg-primary w-full'
+                >
+                  Login with Google
+                </button>
               </div>
             </div>
           </form>

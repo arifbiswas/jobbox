@@ -1,9 +1,11 @@
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { FiTrash } from "react-icons/fi";
+import { usePostJobMutation } from "../../features/job/jobApi";
 
 const AddJob = () => {
   const { handleSubmit, register, control } = useForm();
+  const [postJob, {isLoading , isError}] = usePostJobMutation();
   const {
     fields: resFields,
     append: resAppend,
@@ -22,6 +24,7 @@ const AddJob = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    postJob(data)
   };
 
   return (
